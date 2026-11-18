@@ -28,7 +28,7 @@ For all students, you will need to first edit `ws4/src/msee22_description/urdf/m
 
 Then, build all packages. If you get an error, look for the Lab 4 update thread on Piazza - there might be a solution already posted there to your particular problem.
 ```bash
-cd ~/ece569-spring2026/ws4/
+cd ~/ece569-fall2026/ws4/
 colcon build --symlink-install
 source install/setup.bash
 ```
@@ -52,10 +52,6 @@ Once your have added your csv file to the `resource` folder, build and source yo
 ```bash
 ros2 launch msee22_description move_robot.launch.py
 ```
-and enable the tool0 trail, and take a screenshot of the trajectory for your lab report.
+and enable the tool0 trail (`RobotModel -> Links -> tool0 -> Show Trail`), and take a screenshot of the trajectory for your lab report.
 
 When you are done verifying that your trajectory is successful, upload the CSV file to the Lab4-CSV assignment on Brightspace with the filename `<your purdue username>.csv`. For example, `ldihel.csv`.
-
-### Bonus
-
-For the bonus trajectory, also verify that the joint angles in your `<your purdue username>_bonus.csv` file produces acceptable results before submitting to the Lab4-CSV-bonus assignment on Brightspace.
