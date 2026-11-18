@@ -760,7 +760,7 @@ def main():
     led = np.ones_like(t)
     data = np.column_stack((t, thetaAll.T, led))
     # TODO: replace the csv filename with your own
-    # np.savetxt('ldihel.csv', data, delimiter=',')
+    # np.savetxt('my_purdue_id.csv', data, delimiter=',')
 
 
 if __name__ == "__main__":
