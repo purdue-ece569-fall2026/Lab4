@@ -2,45 +2,59 @@
 clear all;
 close all;
 clc;
-%[text] (1a) Calculate arc length of Lissajous Curve.
-% TODO: replace T, xd, yd with your our lissajous curve
-% T = 2*pi;
-% t = linspace(0,T,1000);
-% xd = 0.16*sin(1*t);
-% yd = 0.08*sin(2*t);
+%[text] Calculate arc length of Lissajous Curve.
+T = 2*pi;
+t_0_2pi = linspace(0,T,1000);
+
+A = 0.16;
+B = 0.08;
+a = 1;
+b = 2;
+xd = A*sin(a*t_0_2pi);
+yd = B*sin(b*t_0_2pi);
 
 d = 0;
-for i=1:length(t)-1
-    % d = d + ...
+for i=1:length(t_0_2pi)-1
+    d = d + sqrt((xd(i+1)-xd(i))^2 + (yd(i+1)-yd(i))^2);
 end
-%[text] Determine the average speed, $c$, of end effector over `tfinal` seconds.
-% TODO: replace tfinal with your code
-% tfinal = 5;
 
-% calculate average speed
+% Determine the average speed, $c$, of end effector over `tfinal` seconds.
+tfinal = 5;
 c = d/tfinal;
+
 %[text] Use forward-euler method to numerically approximate $\\alpha(t)$
 % normalized trapezoidal curve
 g = @(t, T, ta) (T/(T-ta))*((t < ta) .* (t / ta) + (t >= ta & t <= (T - ta)) .* 1 + (t > (T - ta)) .* ((T - t) / ta));
 
 dt = 0.002;
 t = 0:dt:tfinal;
-alpha = zeros(size(t));
+alpha = ones(size(t)) * t_0_2pi(1);
 for i=1:length(t)-1
-    % xdot = ...
-    % ydot = ...
-    % equation (7) in the lab assignment
-    % alpha(i+1) = alpha(i) + ...
+    xdot = A*a*cos(a*alpha(i));
+    ydot = B*b*cos(b*alpha(i));
+    alpha(i+1) = alpha(i) + c*g(t(i), tfinal, 0.5)/sqrt(xdot^2 + ydot^2)*dt;
 end
 
 plot(t,alpha,'LineWidth',2); title('Plot of \alpha(t)');
 grid on; xlabel('time (s)'); ylabel('\alpha(t)');
 yline(T,'k--','LineWidth',2); 
 legend('\alpha','T (period)','Location','southeast')
-%[text] (1c) Combine all trajectories together.
-% TODO: replace with your own lissajous curve
-% x = 0.16*sin(alpha);
-% y = 0.08*sin(2*alpha);
+
+% write down the lissajous curve, scaled by alpha
+x_lissajous = A*sin(a*alpha);
+y_lissajous = B*sin(b*alpha);
+
+% TODO: combine all of your trajectories together
+% x = [x_lissajous, x_mjt_1, ...]
+% y = [y_lissajous, y_mjt_1, ...]
+x = x_lissajous; % for now, we only have one trajectory segment
+y = y_lissajous; % so the entire trajectory is (x_lissajous, y_lissajous)
+
+% ensure that time is spaced by dt=0.002 seconds
+N = size(x,2);
+t = (0:N-1)*dt;
+tfinal = t(end);
+
 %[text] Plot the speed of the trajectory as function of time.
 v = sqrt( (diff(x)/dt).^2 + (diff(y)/dt).^2 );
 plot(dt:dt:tfinal,v,'LineWidth',3); hold on;
@@ -65,7 +79,7 @@ H1 = 0.1519;
 H2 = 0.0854;
 
 % home position of end effector
-M = [1 0 0 L1+L2;
+M = [1 0 0 -L1-L2;
     0 0 -1 -W1-W2;
     0 1 0 H1-H2;
     0 0 0 1];
@@ -75,7 +89,7 @@ S1 = [0 0 1 0 0 0]';
 S2 = [0 -1 0 H1 0 0]';
 S3 = [0 -1 0 H1 0 L1]';
 S4 = [0 -1 0 H1 0 L1+L2]';
-S5 = [0 0 -1 W1 L1+L2 0]';
+S5 = [0 0 -1 W1 -L1-L2 0]';
 S6 = [0 -1 0 H1-H2 0 L1+L2]';
 S = [S1 S2 S3 S4 S5 S6];
 
@@ -214,9 +228,3 @@ data = [t' thetaAll' led];
 
 % TODO: change the csv filename to your purdue ID
 % writematrix(data, 'ldihel.csv')
-
-%[appendix]{"version":"1.0"}
-%---
-%[metadata:view]
-%   data: {"layout":"onright","rightPanelPercent":47.9}
-%---
