@@ -1,8 +1,13 @@
-%[text] Step 1: Create Trapezoidal Velocity Trajectories
 clear all;
 close all;
 clc;
-%[text] Calculate arc length of Lissajous Curve.
+
+%% ==================================== BEGIN TRAJECTORY GENERATION =======================================
+% We have provided this code as an example of
+% generating a trajectory. If you do the bonus,
+% you will need to modify this section of the code.
+% For now, skip to Problem 1.
+
 T = 2*pi;
 t_0_2pi = linspace(0,T,1000);
 
@@ -44,11 +49,14 @@ legend('\alpha','T (period)','Location','southeast')
 x_lissajous = A*sin(a*alpha);
 y_lissajous = B*sin(b*alpha);
 
+% comment out these lines when you create your own trajectory
+x = x_lissajous; % for now, we only have one trajectory segment
+y = y_lissajous; % so the entire trajectory is (x_lissajous, y_lissajous)
+
 % TODO: combine all of your trajectories together
 % x = [x_lissajous, x_mjt_1, ...]
 % y = [y_lissajous, y_mjt_1, ...]
-x = x_lissajous; % for now, we only have one trajectory segment
-y = y_lissajous; % so the entire trajectory is (x_lissajous, y_lissajous)
+
 
 % ensure that time is spaced by dt=0.002 seconds
 N = size(x,2);
@@ -67,9 +75,12 @@ grid on;
 xlabel('time (s)')
 ylabel('velocity (m/s)')
 legend('velocity', 'average velocity', 'velocity limit','Location','south')
-%%
-%[text] ## Step 2: Forward Kinematics
-%[text] (2c) Calculate T0
+
+
+% ==================================== END TRAJECTORY GENERATION =======================================
+
+%% Problem 1: Forward Kinematics
+
 % these values were obtained from the URDF directly
 L1 = 0.2435;
 L2 = 0.2132;
@@ -122,7 +133,7 @@ for i=1:N
     % Tsd(:,:,i) = ...
 end
 %%
-%[text] (2d) Plot (x,y,z) in the s frame
+%[text] (Plot (x,y,z) in the s frame
 xs = Tsd(1,4,:);
 ys = Tsd(2,4,:);
 zs = Tsd(3,4,:);
@@ -139,7 +150,7 @@ legend('Trajectory', 'Start', 'End')
 grid on
 hold off
 %%
-%[text] ## Step 3: Inverse Kinematics
+%[text] ## Problem 2: Inverse Kinematics
 initialguess = theta0;
 Td = T0;
 
@@ -174,7 +185,7 @@ for i=2:N
 end
 close(f);
 %%
-%[text] (3c) Verify that the joint angles don't change very much
+%[text] Verify that the joint angles don't change very much
 dj = diff(thetaAll');
 plot(t(1:end-1), dj)
 title('First Order Difference in Joint Angles')
@@ -183,7 +194,7 @@ grid on
 xlabel('time (s)')
 ylabel('first order difference')
 %%
-%[text] (3d) Verify that the joints we found actually trace out our trajectory (forward kinematics)
+%[text] Verify that the joints we found actually trace out our trajectory (forward kinematics)
 actualTsd = zeros(4,4,N);
 for i=1:N
     % TODO: use forward kinematics to calculate Tsd from our thetaAll
@@ -206,7 +217,7 @@ legend('Trajectory', 'Start', 'End')
 grid on
 hold off
 %%
-%[text] (3e) Verify that the end effector does not enter a kinematic singularity, by plotting the mu3 manipulability measure
+%[text] Verify that the end effector does not enter a kinematic singularity, by plotting the mu3 manipulability measure
 mu3s = zeros(N,1);
 for i=1:N
     Jb = ...                  % calculate body jacobian for thetaAll(:, i)
@@ -219,7 +230,7 @@ grid on
 xlabel('time (s)')
 ylabel('$\mu_3$')
 %%
-%[text] (3f) Save to CSV File
+%[text]  Save to CSV File
 % you can play with turning the LEDs on and off
 led = ones(N,1);
 
@@ -228,3 +239,4 @@ data = [t' thetaAll' led];
 
 % TODO: change the csv filename to your purdue ID
 % writematrix(data, 'ldihel.csv')
+% writematrix(data, 'ldihel_bonus.csv') % only need to submit the bonus trajectory to Brightspace

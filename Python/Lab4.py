@@ -538,11 +538,14 @@ def mjt(x0,x1,t0,t1,t):
     assert 0 <= tau <= 1, ValueError(f"t must be between {t0=} and {t1=}. Got {t=}")
     return x0 + (x1-x0) * (6*tau**5 - 15*tau**4 + 10*tau**3)
 
+
 def main():
 
-    ### Step 1: Trajectory Generation
-    # It is recommended that you skip Step 1 (Task 1) for now
-    # and just use the lissajous trajectory provided for you.
+    # ==================================== BEGIN TRAJECTORY GENERATION ======================================= #
+    # We have provided this code as an example of
+    # generating a trajectory. If you do the bonus,
+    # you will need to modify this section of the code.
+    # For now, skip to Problem 1.
     T = 2*np.pi
     t_0_2pi = np.linspace(0, T, 1000)
     A = 0.16 
@@ -584,19 +587,18 @@ def main():
     x_lissajous = A*np.sin(a*alpha)
     y_lissajous = B*np.sin(b*alpha)
     
-    # TODO: you can create more trajectory segments
+    # Comment out these three lines of code when you create your own trajectory.
+    x = x_lissajous
+    y = y_lissajous
+    t = np.arange(len(x)) * dt
+    
+    # In the bonus, you can create more trajectory segments
     # using a similar method. Once you have all of the trajectory
     # segments in terms of x and y arrays, you can concatenate
     # them all together to create one long trajectory.
     # x = np.concatenate((x_lissajous, x_mjt_1, ...))
     # y = np.concatenate((y_lissajous, y_mjt_1, ...))
     # t = np.arange(len(x)) * dt
-
-    # Until you have completed steps 2 and 3, 
-    # just use the lissajous trajectory that was provided.
-    x = x_lissajous
-    y = y_lissajous
-    t = np.arange(len(x)) * dt
 
     # calculate velocity
     xdot = np.diff(x)/dt
@@ -614,7 +616,10 @@ def main():
     plt.grid()
     plt.show()
 
-    ### Step 2: Forward Kinematics
+    # ==================================== END TRAJECTORY GENERATION ======================================= #
+
+
+    ### Problem 1: Forward Kinematics
     L1 = 0.2435
     L2 = 0.2132
     W1 = 0.1311
@@ -676,7 +681,7 @@ def main():
     ax.legend()
     plt.show()
 
-    ### Step 3: Inverse Kinematics
+    ### Problem 2: Inverse Kinematics
 
     # when i=0
     thetaAll = np.zeros((6, len(t)))
@@ -739,7 +744,7 @@ def main():
     ax.legend()
     plt.show()
     
-    # (3e) verify the robot does not enter kinematic singularity
+    # Verify the robot does not enter kinematic singularity
     # by plotting the mu3 manipulability measure
     mu3s = np.zeros(len(t))
     # for i in range(len(t)):
@@ -761,6 +766,8 @@ def main():
     data = np.column_stack((t, thetaAll.T, led))
     # TODO: replace the csv filename with your own
     # np.savetxt('my_purdue_id.csv', data, delimiter=',')
+    # np.savetxt('my_purdue_id_bonus.csv', data, delimiter=',') # only need to submit the bonus trajectory to Brightspace
+    
 
 
 if __name__ == "__main__":
